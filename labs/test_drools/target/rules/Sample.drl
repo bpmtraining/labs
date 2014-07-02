@@ -1,0 +1,27 @@
+package com.sample
+import com.sample.DroolsTest.Person; 
+ 
+rule "Lazy Devel"
+    when
+        $p : Person()
+        accumulate( Person(role == "devel", $value : workingHours );
+                   $min : min($value);
+                   $p.workingHours == $min);           
+    then
+        System.out.println("LAZY_DEVEL " + $p + "   " + $min);
+end
+
+
+rule "Clever Person"
+    no-loop
+    when
+        p : Person()
+        accumulate( Person($value : workingHours );
+                   $avg : average($value);
+                   ((Float)p.workingHours) >= $avg);           
+    then
+        p.setRaise(5); 
+        update(p);
+        System.out.println("RAISED " + p + "  AVG=" + $avg);
+end
+
